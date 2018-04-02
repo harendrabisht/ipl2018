@@ -12,7 +12,7 @@ var cookieSession = require('cookie-session');
 var bodyParser = require('body-parser');
 var methodOverride = require('method-override');
 var csrf = require('csurf');
-
+var routers = require('./../app/routes/router');
 var mongoStore = require('connect-mongo')(session);
 var flash = require('connect-flash');
 var winston = require('winston');
@@ -103,14 +103,14 @@ module.exports = function (app, passport) {
 
   // should be declared after session and flash
   app.use(helpers(pkg.name));
-
+  app.use(routers);
   // adds CSRF support
   if (process.env.NODE_ENV !== 'test') {
-    app.use(csrf());
+    // app.use(csrf());
 
     // This could be moved to view-helpers :-)
     app.use(function (req, res, next){
-      res.locals.csrf_token = req.csrfToken();
+      //res.locals.csrf_token = req.csrfToken();
       next();
     });
   }

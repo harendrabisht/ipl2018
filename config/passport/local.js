@@ -13,7 +13,8 @@ var User = mongoose.model('User');
 
 module.exports = new LocalStrategy({
     usernameField: 'email',
-    passwordField: 'password'
+    passwordField: 'password',
+    nameField:'name'
   },
   function (email, password, done) {
     var options = {

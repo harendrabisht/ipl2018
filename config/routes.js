@@ -5,7 +5,6 @@
  */
 
 const home = require('../app/controllers/home');
-
 /**
  * Expose
  */
@@ -13,7 +12,7 @@ const home = require('../app/controllers/home');
 module.exports = function (app, passport) {
 
   app.get('/', home.index);
-
+  
   /**
    * Error handling
    */

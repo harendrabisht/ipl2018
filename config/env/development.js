@@ -4,7 +4,7 @@
  */
 
 module.exports = {
-  db: 'mongodb://localhost/your_project_development',
+  db: 'mongodb://localhost/ipl-server',
   facebook: {
     clientID: 'APP_ID',
     clientSecret: 'SECRET',
@@ -24,5 +24,6 @@ module.exports = {
       'https://www.googleapis.com/auth/userinfo.email',
       'https://www.google.com/m8/feeds',
     ]
-  }
+  },
+  secretId: 'ipl2018'
 };
