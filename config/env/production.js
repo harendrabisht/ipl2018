@@ -4,7 +4,7 @@
  */
 
 module.exports = {
-  db: 'mongodb://localhost/ipl-server',
+  db: 'mongodb://harendra.bisht:dev@15491970@ds231719.mlab.com:31719/ipl2018',
   facebook: {
     clientID: 'APP_ID',
     clientSecret: 'SECRET',
