@@ -21,10 +21,14 @@ var UserBidsSchema = new Schema({
     teamBid:{
         team:{
                 type: Schema.Types.ObjectId,
-                ref: 'Player',
+                ref: 'Team',
                 index: true
         },
         point:{
+            type: Number,
+            default:0
+        },
+        winPoint:{
             type: Number,
             default:0
         }
@@ -44,6 +48,10 @@ var UserBidsSchema = new Schema({
             point:{
                 type: Number,
                 default: 0
+            },
+            winPoint:{
+                type: Number,
+                default:0
             }
         }]
     }

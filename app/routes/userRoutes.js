@@ -24,20 +24,12 @@ router
             let userInfo = user
                 .toJSON()
                 .local;
-
-            const token = jwt.sign(userInfo, config.secretId, {
-                expiresIn: 86400 // expires in 24 hours
-            });
-            userInfo.token = token;
-            userInfo.user = user.id
-            userInfo = _.omit(userInfo, 'password');
-            userController
-                .addUser(userInfo)
-                .then((data) => {
-                    res.json(data)
-                });
+                userInfo.user = user.id;
+                req.userInfo = userInfo;
+                next();
+            
         })(req, res, next);
-    });
+    }, userController.addUser);
 router
     .route('/login')
     .post(function (req, res, next) {
@@ -55,7 +47,7 @@ router
                     .toJSON()
                     .local;
 
-                userInfo.userId = user.id;
+                userInfo.user = user.id;
                 req.userInfo = userInfo;
                 next();
 
@@ -65,4 +57,13 @@ router
 router
     .route('/userinfo')
     .get(userController.getUser);
+
+router
+.route('/savebet')
+.post(userController.userInfoByToken, userController.saveUserBet);
+
+router
+    .route('/:match/mybet')
+    .get(userController.userInfoByToken, userController.myMatchBet);
+
 module.exports = router;
