@@ -117,9 +117,23 @@ router
     .delete(bettingPointsCtrl.deleteById);
 router.param('matchid', bettingPointsCtrl.pointsByMatch);
 
+router
+    .route('/bettings')
+    .get(bettingPointsCtrl.getBettings);
+router
+    .route('/match-betting/:matchid')
+    .get(bettingPointsCtrl.getBettingByMatch);
 
+router
+    .route('/match-betting/create')
+    .post(bettingPointsCtrl.saveBettingByMatch);
 
-
+router
+    .route('/match-result/:matchid')
+    .get(bettingPointsCtrl.getBettingResult);
+router
+    .route('/publish-match-result/:matchid')
+    .get(bettingPointsCtrl.publishMatchResult);
 
 
 module.exports = router;

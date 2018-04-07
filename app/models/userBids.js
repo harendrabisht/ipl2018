@@ -31,6 +31,11 @@ var UserBidsSchema = new Schema({
         winPoint:{
             type: Number,
             default:0
+        },
+        result:{
+            type: String,
+            enum:['WIN','LOSS', 'NA'],
+            default:'NA'
         }
     },
     playerBid:{
@@ -52,8 +57,18 @@ var UserBidsSchema = new Schema({
             winPoint:{
                 type: Number,
                 default:0
+            },
+            result:{
+                type: String,
+                enum:['WIN','LOSS', 'NA'],
+                default:'NA'
             }
         }]
+    },
+    created: {
+        type: Date,
+        default: Date.now,
+        index: true
     }
 });
 

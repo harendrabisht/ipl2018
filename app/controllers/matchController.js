@@ -77,8 +77,8 @@ exports.getMatchesByFormats = (req, res) => {
     var matchQuery = Match.find();
 
     matchQuery
-        .populate('teamA', {teamName: true})
-        .populate('teamB', {teamName: true})
+        .populate('teamA', {teamName: true, code: true, url: true})
+        .populate('teamB', {teamName: true, code: true, url: true})
         .populate('series', {name: true})
         .exec(function (err, matches) {
             const mathes = _.groupBy(matches, 'series.name')

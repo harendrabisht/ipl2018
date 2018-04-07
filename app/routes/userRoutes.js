@@ -65,5 +65,8 @@ router
 router
     .route('/:match/mybet')
     .get(userController.userInfoByToken, userController.myMatchBet);
+router
+    .route('/mybets')
+    .get(userController.userInfoByToken, userController.getMyAllBet);
 
 module.exports = router;
