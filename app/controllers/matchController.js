@@ -20,8 +20,8 @@ exports.getList = function (req, res) {
         });
     }
     matchQuery
-        .populate('teamA', {teamName: true, url: true})
-        .populate('teamB', {teamName: true, url: true})
+        .populate('teamA', {teamName: true, url: true, code: true})
+        .populate('teamB', {teamName: true, url: true, code: true})
         .populate('series', {name: true})
         .sort({date: 1})
         .exec(function (err, data) {
@@ -57,11 +57,13 @@ exports.MatchById = function (req, res, next, id) {
         .findById(id)
         .populate('teamA', {
             teamName: true,
-            url: true
+            url: true,
+            code: true
         })
         .populate('teamB', {
             teamName: true,
-            url: true
+            url: true,
+            code: true
         })
         .populate('series', {name: true})
         .exec(function (err, doc) {
