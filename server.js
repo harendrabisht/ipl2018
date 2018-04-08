@@ -22,7 +22,7 @@ const flash    = require('connect-flash');
 const cookieParser = require('cookie-parser');
 const session      = require('express-session');
 const models = join(__dirname, 'app/models');
-const port = process.env.PORT || 4000;
+const port = process.env.PORT || 80;
 
 const app = express();
 const connection = connect();
