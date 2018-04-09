@@ -76,7 +76,7 @@ exports.MatchById = function (req, res, next, id) {
 
 exports.getMatchesByFormats = (req, res) => {
     var formatQuery = req.query.format;
-    var matchQuery = Match.find();
+    var matchQuery = Match.find({status: true});
 
     matchQuery
         .populate('teamA', {teamName: true, code: true, url: true})
