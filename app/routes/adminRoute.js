@@ -6,6 +6,7 @@ const seriesCtrl = require('../controllers/seriesController');
 const matchCtrl = require('../controllers/matchController');
 const bettingTypeCtrl = require('../controllers/bettingTypeController');
 const bettingPointsCtrl = require('../controllers/bettingPointsController');
+
 /**
  * Team Routes
  */
@@ -134,6 +135,5 @@ router
 router
     .route('/publish-match-result/:matchid')
     .get(bettingPointsCtrl.publishMatchResult);
-
 
 module.exports = router;

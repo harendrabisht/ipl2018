@@ -190,3 +190,33 @@ exports.getMyAllBet = (req, res) => {
             }
         )
 }
+
+exports.getTrendingBet = (req, res) =>{
+    let user = req.user,
+        match = req.params.match;
+    UserBids
+        .find()
+        .populate('playerBid.player')
+        .populate('teamBid.team')
+        .populate('user', {'local.name': true})
+        .populate({
+            path: 'match',
+            populate: [
+                {
+                    path: 'teamA',
+                    model: 'Team'
+                }, {
+                    path: 'teamB',
+                    model: 'Team'
+                }
+            ]
+        })
+        .exec((err, data) => {
+            if (err) 
+                throw err;
+          
+                res.json(data)
+        
+            }
+        )
+}

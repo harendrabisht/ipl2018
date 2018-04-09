@@ -69,4 +69,7 @@ router
     .route('/mybets')
     .get(userController.userInfoByToken, userController.getMyAllBet);
 
+
+
+
 module.exports = router;

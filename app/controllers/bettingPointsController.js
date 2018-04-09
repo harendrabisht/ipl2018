@@ -221,7 +221,7 @@ exports.publishMatchResult = (req, res) => {
                         let players = user.playerBid;
                         let point = 0;
                         let updatePlayerBid = _.map(players, (player, i) => {
-                           
+
                             if (player.player.equals(playerBid)) {
                                 player.result = 'WIN';
                                 point += player.winPoint;
@@ -232,24 +232,24 @@ exports.publishMatchResult = (req, res) => {
                             return player;
                         });
                         let updateTeamBid = user.teamBid;
-                        if(user.teamBid.team.equals(teamBid)){
+                        if (user.teamBid.team.equals(teamBid)) {
                             updateTeamBid.result = 'WIN';
                             point += updateTeamBid.winPoint;
-                        } else{
+                        } else {
                             updateTeamBid.result = 'LOSS';
                             point -= updateTeamBid.point;
                         }
 
-
-                        
                         UserBids.update({
-                            match: matchId
+                            match: matchId,
+                            user: user.user
                         }, {
                             $set: {
                                 playerBid: updatePlayerBid,
                                 teamBid: updateTeamBid
+
                             }
-                        }).exec((err, result) => {
+                        }, {upsert: true}).exec((err, result) => {
                             if (err) 
                                 throw err;
                             
