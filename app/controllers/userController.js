@@ -113,7 +113,7 @@ exports.saveUserBet = (req, res) => {
 
     let userBids = new UserBids(userBet);
     UserBids
-        .find({user: user.userId})
+        .find({user: user.userId, match: userBet.match})
         .exec((err, data) => {
             if (data.length > 0) {
                 res
