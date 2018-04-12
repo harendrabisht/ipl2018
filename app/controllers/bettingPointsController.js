@@ -5,6 +5,7 @@ const MatchResult = mongoose.model('MatchResult');
 const UserBids = mongoose.model('UserBids');
 const UserAccount = mongoose.model('UserAccount');
 const _ = require('lodash');
+const mailCtrl = require('./mailController.js');
 
 exports.create = function (req, res) {
     var teamPoints = new TeamPoints(req.body);
@@ -217,6 +218,7 @@ exports.publishMatchResult = (req, res) => {
                 .exec((err, users) => {
                     if (err) 
                         throw err;
+                    
                     _.forEach(users, (user, id) => {
                         let players = user.playerBid;
                         let point = 0;
@@ -227,7 +229,7 @@ exports.publishMatchResult = (req, res) => {
                                 point += player.winPoint;
                             } else {
                                 player.result = 'LOSS';
-                                point -= player.point;
+                                // point -= player.point;
                             }
                             return player;
                         });
@@ -237,7 +239,7 @@ exports.publishMatchResult = (req, res) => {
                             point += updateTeamBid.winPoint;
                         } else {
                             updateTeamBid.result = 'LOSS';
-                            point -= updateTeamBid.point;
+                            // point -= updateTeamBid.point;
                         }
 
                         UserBids.update({
@@ -277,4 +279,69 @@ exports.publishMatchResult = (req, res) => {
                 });
 
         });
+}
+
+exports.sendMatchResult =(req, res)=>{
+
+    const matchId = req.params.matchid;
+    UserBids
+    .find({match: matchId})
+    .populate('playerBid.player')
+    .populate('teamBid.team')
+    .populate({
+        path: 'match',
+        populate: [
+            {
+                path: 'teamA',
+                model: 'Team'
+            }, {
+                path: 'teamB',
+                model: 'Team'
+            }
+        ]
+    })
+    .populate('user',{'local.name': true, 'local.email': true})
+    .exec((err, results)=>{
+        
+        _.forEach(results, (result)=>{
+            let{match, user, teamBid, playerBid} = result;
+            let name = user.local.name;
+            let email = user.local.email;
+            let teamName = teamBid.team.teamName;
+            
+            let messageBody = '';
+            let points = 0;
+            if(teamBid.result === 'WIN'){
+                messageBody+=`<h3>You have won <strong>${teamBid.winPoint}</strong> on <strong>${teamName}</strong></h3>`
+                points+=result.teamBid.winPoint;
+            } else{
+                messageBody+=`<h3>You have lost <strong>${result.teamBid.point}</strong> on <strong>${teamName}</strong></h3>`
+                points-=result.teamBid.point;
+            }
+            if(result.playerBid.length > 0){
+             _.forEach(result.playerBid, (playerBid)=>{
+                    if(playerBid.result==='WIN'){
+                        messageBody+=`<h3>You have won <strong>${playerBid.winPoint}</strong> on <strong>${playerBid.player.firstName} ${playerBid.player.lastName}</strong></h3>`
+                        points+=playerBid.winPoint;
+                    } else{
+                        messageBody+=`<h3>You have lost <strong>${playerBid.point}</strong> on <strong>${playerBid.player.firstName} ${playerBid.player.lastName}</strong></h3>`
+                        points-= playerBid.point;
+                    }
+                });
+            }
+            let replace = {
+                username: name,
+                pretextheader: `${match.teamA.teamName} vs ${match.teamB.teamName}`,
+                message: 'Match result is here',
+                teamAicon: 'http://ipl2018.us-east-2.elasticbeanstalk.com/icons/'+match.teamA.code+'.png',
+                teamBicon:'http://ipl2018.us-east-2.elasticbeanstalk.com/icons/'+match.teamB.code+'.png',
+                teamA: match.teamA.teamName,
+                teamB: match.teamB.teamName,
+                messageBody: messageBody
+            },
+            subject = points > 0 ? `Congratulations! You won ${points}` : `Ooops! You lost ${Math.abs(points)}`;
+            mailCtrl.sendMail('matchResult.html', replace, email, subject);
+        });
+        res.status(200).json();
+    });
 }

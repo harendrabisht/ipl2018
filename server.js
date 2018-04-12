@@ -23,7 +23,7 @@ const cookieParser = require('cookie-parser');
 const session      = require('express-session');
 const models = join(__dirname, 'app/models');
 const port = process.env.PORT || 80;
-
+global.__base = __dirname + '/';
 const app = express();
 const connection = connect();
 /**

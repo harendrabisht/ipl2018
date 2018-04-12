@@ -27,6 +27,10 @@ var MatchResultSchema = new Schema({
         type: Boolean,
         default: false
     },
+    isDraw:{
+        type: Boolean,
+        default: false
+    },
     created: {
         type: Date,
         default: Date.now,

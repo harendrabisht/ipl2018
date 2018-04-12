@@ -6,6 +6,10 @@ const deferred = require('deferred');
 const jwt = require('jsonwebtoken');
 const UserBids = mongoose.model('UserBids');
 const config = require('./../../config');
+const mailCtrl = require('./mailController.js');
+
+
+
 exports.addUser = (req, res) => {
     let userInfo = req.userInfo;
     userInfo.role = 'USER';
@@ -25,6 +29,7 @@ exports.addUser = (req, res) => {
             throw err;
         
         userInfo.role = data.role;
+        mailCtrl.sendMail('signup.html', {username:userInfo.name, message:'You have 1000 points in your account. Let\'s begin the game.'},userInfo.email, 'Welcome to IPL 2018');
         userInfo = _.omit(userInfo, 'password');
         res.json(userInfo);
     });
@@ -44,6 +49,7 @@ exports.doLogin = (req, res) => {
             }, config.secretId, {
                 expiresIn: 86400 // expires in 24 hours
             });
+            
             userInfo.token = token;
             res.json(userInfo);
         });

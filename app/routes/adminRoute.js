@@ -125,6 +125,7 @@ router
     .route('/match-betting/:matchid')
     .get(bettingPointsCtrl.getBettingByMatch);
 
+    /**Save Match Result */
 router
     .route('/match-betting/create')
     .post(bettingPointsCtrl.saveBettingByMatch);
@@ -135,5 +136,11 @@ router
 router
     .route('/publish-match-result/:matchid')
     .get(bettingPointsCtrl.publishMatchResult);
+    
+router
+    .route('/send-match-result/:matchid')
+    .get(bettingPointsCtrl.sendMatchResult);
+
+
 
 module.exports = router;

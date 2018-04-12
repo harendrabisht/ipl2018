@@ -1,6 +1,9 @@
 const mongoose = require('mongoose');
 const Match = mongoose.model('Match');
+const UserAccount = mongoose.model('UserAccount');
 const _ = require('lodash');
+const mailCtrl = require('./mailController.js');
+const BettingCtrl = require('./bettingPointsController');
 
 exports.create = function (req, res) {
     var match = new Match(req.body);
@@ -40,7 +43,10 @@ exports.updateListById = function (req, res) {
     Match.save(function (err, data) {
         if (err) 
             throw err;
+        if(data.status)
+            sendMatchLiveNotification(data);
         res.json(data);
+        
     });
 };
 exports.deleteById = function (req, res) {
@@ -86,4 +92,30 @@ exports.getMatchesByFormats = (req, res) => {
             const mathes = _.groupBy(matches, 'series.name')
             res.json(mathes);
         });
+}
+const sendMatchLiveNotification = (match) =>{
+    let replace = {
+        username: null,
+        message: 'Match is available for choosing your favourite team and players.',
+        teamAicon: 'http://ipl2018.us-east-2.elasticbeanstalk.com/icons/'+match.teamA.code+'.png',
+        teamBicon:'http://ipl2018.us-east-2.elasticbeanstalk.com/icons/'+match.teamB.code+'.png',
+        teamA: match.teamA.teamName,
+        teamB: match.teamB.teamName,
+        matchLink: 'http://ipl2018.us-east-2.elasticbeanstalk.com/match-details/'+match._id
+    },
+    subject = `${replace.teamA} vs ${replace.teamB}`;
+    
+    UserAccount
+    .find()
+    .populate('user',{'local.name': true, 'local.email': true})
+    .exec((err, users)=>{
+        if(err)
+            throw err;
+        _.forEach(users, (user)=>{
+            const email= user.user.local.email,
+            name= user.user.local.name;
+            replace.username = name;
+            mailCtrl.sendMail('match.html', replace,email, subject);
+        });
+    });
 }
